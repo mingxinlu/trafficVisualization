@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Data Visualization Midterm Project</title>
+		<script src="https://d3js.org/d3.v4.min.js"></script>
+		<style>
+			body {
+			  font-family: "Helvetica Neue", Helvetica, sans-serif;
+			  font-size: 14px;
+			  color: #333;
+			}
+
+			path {
+			  stroke: #aaa;
+			}
+
+			path:hover {
+			  fill: orange;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Data Visualization Midterm Project</h1>
+		<svg width="2000" height="1800"></svg>
+		<script type="text/javascript">
+			// define functions
+			function drawState(error, states){
+				var width = 2500;
+				var height = 2500;
+				var projection = d3.geoEquirectangular()
+				.fitExtent([[0,-1000], [width, height-1000]], states);
+				var geoGenerator = d3.geoPath()
+				.projection(projection);
+				var firstpart = d3.select('svg')
+				.append('g')
+				var pathgroup = firstpart
+				.selectAll('g')
+				.data(states.features)
+				.enter()
+				.append('g');
+				var path = pathgroup
+				.append('path')
+				.attr('d', geoGenerator)
+				.attr('id',function(d) {
+					return d.properties.name;
+				})
+				// .attr('opacity', 0)
+				.attr('fill','#ddd')
+				.on('mouseover', function(d, i){
+					county_path.attr('opacity', 0);
+					var temp = county_path.filter(function(local, i){
+						return local.properties.STATE == d.id; 
+					}).attr('opacity', 1);
+					var zoom = d3.behavior.zoom();
+					temp.call(zoom);
+				})
+				.on('mouseleave', function(d, i){
+				})
+				;
+
+				// var texts = d3.select('svg')
+				// .append('g')
+				// .selectAll	('text')
+				// .data(states.features)
+				// .enter()
+				// .append('text')
+				// .attr('text-anchor', 'middle')
+				// .attr('alignment-baseline', 'middle')
+				// .attr('opacity', 0.5)
+				// .text(function(d) {
+				// 	return d.properties.name;
+				// })
+				// .attr('transform', function(d) {
+				// 	var center = geoGenerator.centroid(d);
+				// 	return 'translate (' + center + ')';
+				// });
+			}
+			function drawCounty(error, counties){
+				var width = 2500;
+				var height = 2500;
+				var projection = d3.geoEquirectangular()
+				.fitExtent([[0,-1000], [width, height-1000]], counties);
+				var geoGenerator = d3.geoPath()
+				.projection(projection);
+				var firstpart = d3.select('svg')
+				.append('g')
+				var temp = new Array();
+				var count = new Array();
+				var pathgroup = firstpart
+				.selectAll('g')
+				.data(counties.features)
+				.enter()
+				.append('g');
+				county_path = pathgroup
+				.append('path')
+				.attr('d', geoGenerator)
+				.attr('id',function(d) {
+					return d.properties.name;
+				})
+				// .attr('opacity', 0)
+				.attr('fill','#ddd')
+				.attr('transform', function(d,i){
+					if (!(d.properties.STATE in temp)){
+						temp[d.properties.STATE] = [0,0];
+						count[d.properties.STATE] = 0;
+					}
+					center = geoGenerator.centroid(d);
+					temp[d.properties.STATE][0] += center[0];
+					temp[d.properties.STATE][1] += center[1];
+					count[d.properties.STATE] += 1;
+				})
+				.attr('transform',function(d, i){
+					var center = geoGenerator.centroid(d);
+					center[0] = - temp[d.properties.STATE][0] /  count[d.properties.STATE]+ 600;
+					center[1] = - temp[d.properties.STATE][1] /  count[d.properties.STATE] + 100;
+					return 'translate (' + center + ')';
+				}
+				 ).attr('opacity', 0)
+				
+			}
+
+
+			// define global values
+			var state_path;
+			var	county_path;
+			// running parts
+			d3.json('../Map json files/gz_2010_us_county_500k.json', drawCounty);
+    		d3.json("../Map json files/us-states.json", drawState);
+    		data_inject();
+ 			
+
+		</script>
+	</body>
+</html>
