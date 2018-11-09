@@ -6,11 +6,11 @@ function get_total(d, i, columns) {
 }
 function Plot_bar_chart(){
     
-    function setup_scales(data,Yaxis){
-        xscale.domain(data.map(function(d) { return d.key; }));
-        yscale.domain([0, d3.max(data, function(d) { return d[0][1]-d[0][0]; })]);
+    function setup_scales(data,objective='County'){
+        xscale.domain(data.map(function(d,i) { var ret_val = (objective == 'County') ? array[i]:d.County;  return ret_val;}));
+        yscale.domain([0, d3.max(data, function(d) {var ret_val = (objective == 'County') ? d[0][1]-d[0][0] : d.total; return ret_val; })]);
     }
-    function setup_bars(data){				
+    function setup_bars(data,objective='County'){				
         var bars = group.selectAll("rect")
             .remove()
             .exit()
@@ -24,8 +24,8 @@ function Plot_bar_chart(){
             .enter().append("rect")
             //.filter(function(d){
             //return d.County == 'ALL';})
-            .attr("x", function(d) {  return xscale(d.key); })
-            .attr("y", function(d) { return yscale(d[0][1]-d[0][0]); })
+            .attr("x", function(d,i) {  var ret_val = (objective == 'County') ? array[i]:d.County; return xscale(ret_val); })
+            .attr("y", function(d) { var ret_val = (objective == 'County') ? d[0][1]-d[0][0]:d.total; return yscale(ret_val); })
             .attr("fill","#7b6888")
             .on("mouseover", function(d) { 
                 tooltip.style("display", null);
@@ -47,18 +47,18 @@ function Plot_bar_chart(){
             .transition()
             .delay(200)
             .duration(1000)
-            .attr("height", function(d) { 
-                 return yscale(0) - (yscale(d[0][1]-d[0][0])); 
+            .attr("height", function(d) { var ret_val = (objective == 'County') ? d[0][1]-d[0][0]:d.total;
+                 return yscale(0) - (yscale(ret_val)); 
             })
             .attr("width", xscale.bandwidth());
     }
-
-    function setup_axis(y_type){
+    
+    function setup_axis(y_type,objective="duration"){
         var xAxis = d3.axisBottom(xscale);
         var yAxis = d3.axisLeft(yscale);
-        /*var x_axis = group.selectAll(".x_axis")
+        var x_axis = group.selectAll(".x_axis")
             .remove()
-            .exit()*/
+            .exit()
         var y_axis = group.selectAll(".y_axis")
             .remove()
             .exit()
@@ -67,9 +67,9 @@ function Plot_bar_chart(){
             .attr("transform", "translate(0," + (height-40) + ")")
             .call(xAxis)
             .selectAll("text")
-            .attr("dx", "3em")
-            .attr("dy", "-0.5em")
-            .attr("transform", "rotate(90)")
+            .attr("dx", "4em")
+            .attr("dy", function(){var ret_val = (objective == 'County') ?"0.5em":"-0.5em"; return ret_val;})
+            .attr("transform", function(){var ret_val = (objective == 'County') ?"rotate(45)":"rotate(90)"; return ret_val;})
         
         group.append("g")
             .attr("class", "y_axis")
@@ -81,33 +81,36 @@ function Plot_bar_chart(){
             .text(y_type);
     }
 
-    function draw_type_chart (State='AL',County='ALL',RefinedType='ALL'){
-        var new_data = CSV_data.filter(function(d){
-            return d.State == State && d.County == County &&  d.RefinedType==RefinedType;
-        })
+    function draw_type_chart (State='AL',County='ALL',RefinedType='ALL',objective="State"){
+        var new_data;
+        if (objective=="County"){
+            new_data = CSV_data.filter(function(d){
+                return d.State == State && d.County == County &&  d.RefinedType==RefinedType;
+            })
+            var keys = CSV_data.columns.slice(3);
+            new_data = d3.stack().keys(keys)(new_data);
+        }
+        else{
+            new_data = CSV_data.filter(function(d){
+                return d.State == State &&  d.RefinedType==RefinedType && d.County!='ALL';
+            })
+        }
         
-        var keys = CSV_data.columns.slice(3);
-        stacked_data = d3.stack().keys(keys)(new_data);
-        
-        setup_scales(stacked_data);
-        setup_bars(stacked_data);
-        //setup_legends(keys);
-        setup_axis('frequency')
+        setup_scales(new_data,objective);
+        setup_bars(new_data,objective);
+        setup_axis('frequency',objective);
 
     }
     Plot_bar_chart.draw_type_chart=draw_type_chart;
+
     var svg = d3.select(".Plot_bar").select("svg");
-    var margin = {top: 40, right: 20, bottom: 20, left: 60};
+    var margin = {top: 40, right: 20, bottom: 40, left: 60};
     var width =parseInt(svg.style("width"), 10) - margin.left - margin.right;
     var height =parseInt(svg.style("height"), 10)  - margin.top - margin.bottom;
     var group = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     var xscale = d3.scaleBand()
             .rangeRound([0, width])
             .paddingInner(0.1);  
-    /*var xscale = d3.scaleOrdinal()
-        .rangeRound([0, width])
-        .range(["0 - 15 min", "30 - 60 min" , "1 - 2 hours" , "2 - 4:20 hours", "4:20 - 8:50 hours", "8:50  - 17 hours", "17 - 34:10 hours","34:10 hours - 3 days","3 - 5.5 days","5.5 - 11.5 days","> 11.5 days"]);
-*/
     var yscale = d3.scaleLinear()
             .rangeRound([height-40, 0]);
     var color = d3.scaleOrdinal()
@@ -133,15 +136,23 @@ function Plot_bar_chart(){
         .attr("font-weight", "bold")
         .attr("color","black");
     //thiCSV_data;
+    var array = ["0 - 15 min", "15 - 30 min","30 - 60 min" , "1 - 2 hours" , "2 - 4:20 hours", "4:20 - 8:50 hours", "8:50  - 17 hours"
+    , "17 - 34:10 hours","34:10 hours - 3 days","3 - 5.5 days","5.5 - 11.5 days","> 11.5 days"];
     var CSV_data;
-    d3.csv("../duration_dist_All.csv", get_total, function(data){
+    d3.csv("../duration_dist_All.csv",get_total,function(data){
+        //console.log(data);
         CSV_data = data;
         draw_type_chart()
     });
     //Plot_bar_chart.draw_type_chart=draw_type_chart;
 }
-//Plot_bar_chart();
-
+/*function rename_columns(d,i,columns){
+    Object.keys(d).forEach(function(origProp,i) {
+        d[array[i]] = d[origProp];
+        delete d[origProp];
+    });
+    return d;
+}*/
 function Plot_pie_chart(){
     function setup_legends(){
         var keys = CSV_data.columns.slice(3);

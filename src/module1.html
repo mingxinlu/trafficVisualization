@@ -100,17 +100,6 @@
 						  <li class="nav-item active">
 							<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
 						  </li>
-						  <!--<li class="nav-item">
-							<a class="nav-link disabled" href="#">Disabled</a>
-						  </li>-->
-						  <!--<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-							<div class="dropdown-menu" aria-labelledby="dropdown01">
-							  <a class="dropdown-item" href="#">Action</a>
-							  <a class="dropdown-item" href="#">Another action</a>
-							  <a class="dropdown-item" href="#">Something else here</a>
-							</div>
-						  </li>-->
 						</ul>
 						<form class="form-inline my-2 my-lg-0">
 						  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
@@ -120,9 +109,9 @@
 			</nav>
 		<div id="buttons" class="Left_Bottom">
 			<button onclick="myFunction()" type="button" class="btn btn-secondary btn-lg btn-block">Clickme</button>
-			<button onclick="Country()" type="button" class="btn btn-secondary btn-lg btn-block">Country</button>
-			<button onclick="State_detail()" type="button" class="btn btn-secondary btn-lg btn-block">State detail</button>
-			<fieldset disabled>
+			<button onclick="State()" type="button" class="btn btn-secondary btn-lg btn-block">State</button>
+			<button onclick="County()" type="button" class="btn btn-secondary btn-lg btn-block">County</button>
+			<fieldset enabled>
 			<form>
 					<div class="form-group">
 					<label for="state">Select State</label>
@@ -292,22 +281,19 @@
 			</script>-->
 		</div>
 		
-		<!--<script src="module2.js"></script>-->
+		<!--<script src="module1.js"></script>-->
 		<script src="plot.js"></script>
 		<script type="text/javascript">
 
-		
+		var Mode = "State";
 		Plot_bar_chart();
 		Plot_pie_chart();
 		$(function(){
-			/*$("#State_form").hide();
-			$("#Traffic_Type").hide();
-			$("#Duration_form").hide();*/
 			$("#Traffic_Type").change(function(){
-				Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text());
+				Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text(),Mode);
 				});
 			$("#State_form").change(function(){
-				Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text());
+				Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text(),Mode);
 				Plot_pie_chart.draw_pie_chart($("#State_form option:selected").val(),'ALL')
 			});
 			$("#Duration_form").change(function(){
@@ -315,11 +301,16 @@
     	});
 
 		});
-		function State_detail(){
-			$("fieldset").prop('disabled',false);//="enabled";
+		function County(){
+			Mode = "County";
+			Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text(),Mode);
+			//$("fieldset").prop('disabled',false);//="enabled";
 		}
-		function Country(){
-			$("fieldset").prop('disabled',true);//="enabled";
+		function State(){
+			Mode = "State";
+			//$("fieldset").prop('disabled',false);
+			Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text(),Mode);
+			
 		}
 		</script>
 		
