@@ -1,4 +1,4 @@
-
+// define functions
 			function draw_state(error, states){
 				var width = 2500;
 				var height = 2500;
@@ -19,7 +19,7 @@
 				.attr('id',function(d) {
 					return d.properties.name;
 				})
-				// .attr('opacity', 0)
+				//.attr('opacity', 0)
 				.attr('fill','#ddd')
 				.on('mouseover', function(d, i){
 					county_path.attr('opacity', 0);
@@ -56,11 +56,10 @@
 					return 'translate (' + center + ')';
 				});
 				bubble_map('Accident');
-
 			}
 			function draw_county(error, counties){
-				var width = 5000;
-				var height = 5000;
+				var width = 2500;
+				var height = 2500;
 				var projection_c = d3.geoEquirectangular()
 				.fitExtent([[0,-1000], [width, height-1000]], counties);
 				geoGenerator_c = d3.geoPath()
@@ -77,6 +76,9 @@
 				county_path = pathgroup
 				.append('path')
 				.attr('d', geoGenerator_c)
+				.attr('id',function(d) {
+					return d.properties.name;
+				})
 				// .attr('opacity', 0)
 				.attr('fill','#ddd')
 				.attr('transform', function(d,i){
@@ -135,81 +137,74 @@
 
 				})	
 			}*/
-			function bar_chart(){
-				d3.csv('../duration_dist.csv',
+		/*	function bar_chart(){
+				d3.csv('state-areas.csv',
+			function(rcd, i, values) {
+				rcd.overall = +rcd[values[1]];
+		  		return rcd;
+			},
 			function(error, data){
-				data = data[0];
-				console.log(data);
-				arr = []
-				// name = []
-				for (temp in data){
-					arr.push(data[temp])
-					// name.push(temp)
-				}
-				arr = arr.slice(2)
-				// name = name.slice(2)
-				console.log(arr)
-				var height = 200;
-			  	g = d3.select('svg').append("g").attr("transform", "translate(" + 100 + "," + 600 + ")").attr('id','bar');
-					var y = d3.scaleLinear()
-					.domain([0, d3.max(arr,d=>d)])
-					.rangeRound([height, 0])
-					.nice()
-					;
-					// translate = {}
-				 //  var temp = 0;
-				 //  data.map(functionstion(d, i) {
-				 //  	temp = Math.max(d.overall, temp)
-				 //  })
-				 //  data.map(function(d, i) {
-				 //  	poses[d.State] = i;
-				 //  	translate[d.State] = d.overall / temp * 80;
-				 //  });
-				 //  // console.log(data)
-				 //  x.domain(data.map(function(d) { return d.State; }));
-				  // y.nice();
-				  width = 10.1
-				 padding = 0.1
-				  var rect =  g.append("g")
-				 .selectAll("rect")
-				 .data(arr)
-				 .enter()
-				 .append("rect")
-				 .attr("fill", "#CCAD69")
-				  .attr("x", function(d, i) { 
-				  	return width * i; })
-				  .attr("y", function(d,i) { 
-				  	console.log(y(d))
-				  	return y(d); })
-				  .attr("height", function(d,i) {return y(0) - y(d);})
-				  .attr("width", 4)
-				  ;
-				  }) 	 
-				  // ;
-		  		//   g.append("g")
-				  // .attr("class", "axis")
-				  // .attr("transform", "translate(0,"+450+")")
-				  // .call(d3.axisBottom(x));
+				var height = 100;
+			  	g = svg.append("g").attr("transform", "translate(" + 100 + "," + 600 + ")").attr('id','bar');
+				var x = d3
+				.scaleBand().
+				rangeRound([0, 800]).
+				paddingInner(0.1);
+				var y = d3.scaleLinear()
+				.rangeRound([height, 0]);
+				translate = {}
+			  var temp = 0;
+			  data.map(function(d, i) {
+			  	temp = Math.max(d.overall, temp)
+			  })
+			  data.map(function(d, i) {
+			  	poses[d.State] = i;
+			  	translate[d.State] = d.overall / temp * 80;
+			  });
+			  // console.log(data)
+			  x.domain(data.map(function(d) { return d.State; }));
+			  y.domain([0, d3.max(data, function(d) { return d.overall; })]).nice();
+			  var rect =  g.append("g")
+			 .selectAll("rect")
+			 .data(data)
+			 .enter()
+			 .append("rect")
+			 .attr("fill", function(d) { return colors(Math.round(d.key / 10)); })
+			  .attr("x", function(d) { return x(d.State); })
+			  .attr("y", function(d,i) { 
+			  	return y(d.overall); })
+			  .attr("height", function(d,i) {return y(0) - y(d.overall);})
+			  .attr("width", x.bandwidth())
+			  ;
 
-				  // // g.append('rect').attr('x', 0).attr('y', 0).attr('fill', '#000').attr('height', 100).attr('width', 100)
+			  }) 	 
+			  ;
+	  		  g.append("g")
+			  .attr("class", "axis")
+			  .attr("transform", "translate(0,"+450+")")
+			  .call(d3.axisBottom(x));
 
-				  // g.append("g")
-				  // .attr("class", "axis")
-				  // .attr('transform','translate(0,0)')
-				  // .call(d3.axisLeft(y))
-				  // .append("text").
-				  // text("Area")
-				  // .attr("x", 60)
-				  // .attr("fill", "#000");
+			  // g.append('rect').attr('x', 0).attr('y', 0).attr('fill', '#000').attr('height', 100).attr('width', 100)
 
-				}
+			  g.append("g")
+			  .attr("class", "axis")
+			  .attr('transform','translate(0,0)')
+			  .call(d3.axisLeft(y))
+			  .append("text").
+			  text("Area")
+			  .attr("x", 60)
+			  .attr("fill", "#000");
+
+			}
+		)
+			}*/
 			function data_inject(file, ptr){
-				// pie_chart();
-				// bar_chart();
+				console.log('here');
 				var countydata = {};
 				ptr = 'Congestion';
 				d3.csv(file,
 				 function(error, data){
+				 	console.log('here');
 					var statedata = new Object();
 					forsort = []
 				 	for(var i = 1; i < data.length; i++){
@@ -240,12 +235,13 @@
 					 	})
 				 	d3.csv("https://raw.githubusercontent.com/jasonong/List-of-US-States/master/states.csv",function(error, data){
 				 		var check = {};
+				 		console.log('there')
 				 		for(var i = 0; i < data.length; i++){
 				 			check[data[i].State] = data[i].Abbreviation;
 				 		}
 				 		texts.text(function(d) {
 					return check[d.properties.name];
-				})
+					})
 				 		console.log(check)
 					 	console.log(statedata);
 					 	var colors =["#78281F", "#B03A2E", "#E74C3C", "#F1948A", "#F5B7B1", "#FADBD8", "#F9EBEA"].reverse();
@@ -276,24 +272,45 @@
 					.range([0,20]);
 					data = data.sort(function(a, b) {
 							return b[ptr] - a[ptr];
-						}).slice(0,3000)
-					d3.select('svg').append("g")
+						}).slice(0,500)
+					colors = ["Blue", "#CCAD69", "#BACC69", "#88CC69", "#69CC7B", "#69CCAD"]
+
+					var bubbles = d3.select('svg').append("g")
 					.attr("class", "bubble")
 					.selectAll("circle")
-					.data(
-						data
-					)
+					.data(data)
 					.enter().append("circle") 
+					.attr('fill', function(d, i){
+						if(i < 5){return "Blue"}
+						else if(i < 20){return "#CCAD69"}
+						else if(i < 50){return "#BACC69"}
+						else if(i < 100){return "#88CC69"}
+						return "#69CC7B";
+					})
 	   				.on('mouseover', function(d, i){
-						d3.select(this).attr('class', 'bubbleover')
+						d3.select(this).attr('opacity', '0.9')
 					})
 					.on('mouseout', function(d, i){
-						d3.select(this).attr('class', '')
+						d3.select(this).attr('opacity', '0.7')
 					})
 					.attr("cx", function(d,i){return projection([d.mid_lng, d.mid_lat])[0];})
         			.attr("cy",function(d,i){return projection([d.mid_lng, d.mid_lat])[1];})
 					.attr("r", function(d) {
 						return radius(d[ptr]); })
+					d3.select('.bubble').append('g')
+					.selectAll('circle').data(['1-5','6-20','20-50','50-100','100-500'])
+					.enter().append('circle')
+					.attr('r','5').attr('transform', (d, i)=>{
+						return 'translate(600,'+(250 + 15 * i )+')'
+					}).attr('fill',(d, i) => colors[i])
+					.on('mouseover',function(d, i){
+						d3.select('.bubble').selectAll('circle').filter(function(){
+							return d3.select(this).attr('fill')!= colors[i];
+						}).attr('opacity', 0)
+					}).on('mouseleave',function(d, i){
+						d3.select('.bubble').selectAll('circle').filter(function(){
+							return d3.select(this).attr('fill')!= colors[i];
+						}).attr('opacity', 0.7)})
 					
 				}
 					)
@@ -304,8 +321,7 @@
 			}
 			
 			// define global values
-			var text;
-
+			var texts;
 			var path;
 			var	county_path;
 			var state_value;
@@ -316,3 +332,4 @@
 			d3.json('../Map json files/gz_2010_us_county_500k.json', draw_county);
     		d3.json("../Map json files/us-states.json", draw_state);
     		// controler_construct()
+    		// data_inject()
