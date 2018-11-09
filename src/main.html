@@ -168,6 +168,12 @@
 					</select>
 					</div>
 			</form>
+			<form>
+			<div class="form-group">				
+				<label for="County">County</label>
+				<input class="form-control" id="county-name" type="text" placeholder="Select County" readonly>
+			</div>
+			</form>
 			<form> 
 					<div class="form-group">
 					<label for="Traffic_Type">Select Type</label>
@@ -304,6 +310,8 @@
 		function County(){
 			Mode = "County";
 			Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text(),Mode);
+			$("#county-name").attr('placeholder', 'ALL');
+			//$("input.placeholder").val("ALL")
 			//$("fieldset").prop('disabled',false);//="enabled";
 		}
 		function State(){
