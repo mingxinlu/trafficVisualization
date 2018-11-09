@@ -20,7 +20,7 @@
 				.attr('id',function(d) {
 					return d.properties.name;
 				})
-				//.attr('opacity', 0)
+				// .attr('opacity', 0)
 				.attr('fill','#ddd')
 				.on('mouseover', function(d, i){
 					county_path.attr('opacity', 0);

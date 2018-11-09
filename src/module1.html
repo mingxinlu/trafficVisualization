@@ -6,7 +6,17 @@
 		integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" 
 		crossorigin="anonymous">
 		<script src="https://d3js.org/d3.v4.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+		crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+		crossorigin="anonymous">
+		</script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+		crossorigin="anonymous"></script>
 		<style>
+
 			body {
 			  font-family: "Helvetica Neue", Helvetica, sans-serif;
 			  font-size: 14px;
@@ -27,20 +37,41 @@
 			path:hover {
 			  fill: orange;
 			}
-			.split {
+			.Left_Bottom {
 				float: left;
 				width: 20%;
 				height: 500px; /* only for demonstration, should be removed */
 				background: #ccc;
 				padding: 20px;
 			}
-			.plot {
+			.Map {
 				float: left;
 				padding: 20px;
 				width: 80%;
 				background-color: #f1f1f1;
 				height: 500px; /* only for demonstration, should be removed */
 			}
+			.Plot {
+				float: left;
+				padding: 20px;
+				width: 100%;
+				background-color: #f1f1f1;
+				height: 500px; /* only for demonstration, should be removed */
+			}
+
+			.Plot_bar {
+				float: left;
+				width: 70%;
+				background-color: #f1f1f1;
+				height: 500px; /* only for demonstration, should be removed */
+			}
+			.Plot_pie {
+				float: left;
+				width: 30%;
+				background-color: #f1f1f1;
+				height: 500px; /* only for demonstration, should be removed */
+			}
+
 			.progress-meter .background {
 				fill: #ccc;
 			}
@@ -54,12 +85,13 @@
 				font-size: 24px;
 				font-weight: bold;
 			}
+
 		</style>
 	</head>
 	<body>
 			<h1>Data Visualization Midterm Project</h1>
 			<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-					<a class="navbar-brand" href="#">Navbar</a>
+					<a class="navbar-brand" href="#">Data Visualization Midterm Project</a>
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="navbar-toggler-icon"></span>
 					</button>
@@ -68,20 +100,17 @@
 						  <li class="nav-item active">
 							<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
 						  </li>
-						  <li class="nav-item">
-							<a class="nav-link" href="#">Link</a>
-						  </li>
-						  <li class="nav-item">
+						  <!--<li class="nav-item">
 							<a class="nav-link disabled" href="#">Disabled</a>
-						  </li>
-						  <li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="https://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+						  </li>-->
+						  <!--<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
 							<div class="dropdown-menu" aria-labelledby="dropdown01">
 							  <a class="dropdown-item" href="#">Action</a>
 							  <a class="dropdown-item" href="#">Another action</a>
 							  <a class="dropdown-item" href="#">Something else here</a>
 							</div>
-						  </li>
+						  </li>-->
 						</ul>
 						<form class="form-inline my-2 my-lg-0">
 						  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
@@ -89,43 +118,125 @@
 						</form>
 					</div>
 			</nav>
-		<div id="buttons" class="split">
+		<div id="buttons" class="Left_Bottom">
 			<button onclick="myFunction()" type="button" class="btn btn-secondary btn-lg btn-block">Clickme</button>
-			<button onclick="myFunction()" type="button" class="btn btn-secondary btn-lg btn-block">Clickme</button>
-			<button onclick="myFunction()" type="button" class="btn btn-secondary btn-lg btn-block">Clickme</button>
-			<select class="form-control bfh-states" data-country="US" data-state="CA"></select>
-
+			<button onclick="Country()" type="button" class="btn btn-secondary btn-lg btn-block">Country</button>
+			<button onclick="State_detail()" type="button" class="btn btn-secondary btn-lg btn-block">State detail</button>
+			<fieldset disabled>
 			<form>
 					<div class="form-group">
-					<label for="exampleFormControlSelect1">Example select</label>
-					<select class="form-control" id="exampleFormControlSelect1">
-					<option>1</option>
-					<option>2</option>
-					<option>3</option>
+					<label for="state">Select State</label>
+					<select class="form-control" id="State_form" >
+							<option value="AL">Alabama</option>
+							<option value="AZ">Arizona</option>
+							<option value="AR">Arkansas</option>
+							<option value="CA">California</option>
+							<option value="CO">Colorado</option>
+							<option value="CT">Connecticut</option>
+							<option value="DE">Delaware</option>
+							<option value="DC">District Of Columbia</option>
+							<option value="FL">Florida</option>
+							<option value="GA">Georgia</option>
+							<option value="ID">Idaho</option>
+							<option value="IL">Illinois</option>
+							<option value="IN">Indiana</option>
+							<option value="IA">Iowa</option>
+							<option value="KS">Kansas</option>
+							<option value="KY">Kentucky</option>
+							<option value="LA">Louisiana</option>
+							<option value="ME">Maine</option>
+							<option value="MD">Maryland</option>
+							<option value="MA">Massachusetts</option>
+							<option value="MI">Michigan</option>
+							<option value="MN">Minnesota</option>
+							<option value="MS">Mississippi</option>
+							<option value="MO">Missouri</option>
+							<option value="MT">Montana</option>
+							<option value="NE">Nebraska</option>
+							<option value="NV">Nevada</option>
+							<option value="NH">New Hampshire</option>
+							<option value="NJ">New Jersey</option>
+							<option value="NM">New Mexico</option>
+							<option value="NY">New York</option>
+							<option value="NC">North Carolina</option>
+							<option value="ND">North Dakota</option>
+							<option value="OH">Ohio</option>
+							<option value="OK">Oklahoma</option>
+							<option value="OR">Oregon</option>
+							<option value="PA">Pennsylvania</option>
+							<option value="RI">Rhode Island</option>
+							<option value="SC">South Carolina</option>
+							<option value="SD">South Dakota</option>
+							<option value="TN">Tennessee</option>
+							<option value="TX">Texas</option>
+							<option value="UT">Utah</option>
+							<option value="VT">Vermont</option>
+							<option value="VA">Virginia</option>
+							<option value="WA">Washington</option>
+							<option value="WV">West Virginia</option>
+							<option value="WI">Wisconsin</option>
+							<option value="WY">Wyoming</option>
 					</select>
 					</div>
 			</form>
-
-			<form>
+			<form> 
 					<div class="form-group">
-					<label for="exampleFormControlSelect1">Example select</label>
-					<select class="form-control" id="exampleFormControlSelect1">
-					<option>1</option>
-					<option>2</option>
-					<option>3</option>
+					<label for="Traffic_Type">Select Type</label>
+					<select class="form-control" id="Traffic_Type">
+					<option >ALL</option>
+					<option>Accident</option>
+					<option>Broken</option>
+					<option>Congestion</option>
+					<option>Construction</option>
+					<option>Event</option>
+					<option>Incident</option>
+					<option>Lane</option>
+					<option>Other</option>
 					</select>
 					</div>
 			</form>
+			<form>
+					<div class="form-group">
+					<label for="Duration">Select Duration</label>
+					<select class="form-control" id="Duration_form">
+							<option value="ALL">ALL</option>
+							<option value="(0.0, 16.0]">0 - 15 min</option>
+							<option value="(16.0, 32.0]">15 - 30 min</option>
+							<option value="(32.0, 64.0]">30 - 60 min</option>
+							<option value="(64.0, 128.0]">1 - 2 hours</option>
+							<option value="(128.0, 256.0]">2 - 4:20 hours</option>
+							<option value="(256.0, 512.0]">4:20 - 8:50 hours</option>
+							<option value="(512.0, 1024.0]">8:50  - 17 hours</option>
+							<option value="(1024.0, 2048.0]">17 - 34:10 hours</option>
+							<option value="(2048.0, 4096.0]">34:10 hours - 3 days</option>
+							<option value="(4096.0, 8192.0]">3 - 5.5 days</option>
+							<option value="(8192.0, 16384.0]">5.5 - 11.5 days</option>
+							<option value="(16384.0, inf]">> 11.5 days</option>
+					</select>
+					</div>
+			</form>
+		</fieldset>
 
 		</div>
-		<div id="map" class="plot">
-				<div class="progress">
+		<div class="Map">
+				<div id="progress_bar "class="progress">
 						<div id="bar" class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar"
-						aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+						aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" style="width:10%">
 						</div>
 				</div>
-			<svg width="1000" height="500"></svg><!--<script src="https://d3js.org/d3.v3.min.js"></script>-->
-			<svg id="Plots" width="1000" height="500"></svg>
+				<div id="map">
+						<svg width="1000" height="400"></svg>
+				</div>
+			</div>
+
+			<div class = "Plot">
+				<div class="Plot_bar">
+						<svg id="svg_bar" width="100%" height="100%"></svg>
+				</div >
+				<div class="Plot_pie">
+						<svg width="100%" height="100%"></svg>
+				</div>
+			 </div>
 			<!--<script type="text/javascript">
 			var width = 960,
 				height = 500,
@@ -184,8 +295,31 @@
 		<!--<script src="module2.js"></script>-->
 		<script src="plot.js"></script>
 		<script type="text/javascript">
-		function myFunction(){
-			alert("hi");
+
+		
+		Plot_bar_chart();
+		Plot_pie_chart();
+		$(function(){
+			/*$("#State_form").hide();
+			$("#Traffic_Type").hide();
+			$("#Duration_form").hide();*/
+			$("#Traffic_Type").change(function(){
+				Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text());
+				});
+			$("#State_form").change(function(){
+				Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text());
+				Plot_pie_chart.draw_pie_chart($("#State_form option:selected").val(),'ALL')
+			});
+			$("#Duration_form").change(function(){
+				Plot_pie_chart.draw_pie_chart($("#State_form option:selected").val(),'ALL',$("#Duration_form option:selected").val())
+    	});
+
+		});
+		function State_detail(){
+			$("fieldset").prop('disabled',false);//="enabled";
+		}
+		function Country(){
+			$("fieldset").prop('disabled',true);//="enabled";
 		}
 		</script>
 		
