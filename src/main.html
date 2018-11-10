@@ -216,7 +216,7 @@
 		<div class="Map">
 				<div id="progress_bar "class="progress">
 						<div id="bar" class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar"
-						aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" style="width:10%">
+						aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
 						</div>
 				</div>
 				<div id="map">
@@ -232,21 +232,21 @@
 						<svg width="100%" height="100%"></svg>
 				</div>
 			 </div>
-			<!--<script type="text/javascript">
-			var width = 960,
-				height = 500,
-				twoPi = 2 * Math.PI,
-				progress = 0,
+			<script type="text/javascript">
+			//width = 960,
+				//height = 500,
+				//twoPi = 2 * Math.PI,
+			var	progress = 0,
 				total = 23543838, // must be hard-coded if server doesn't report Content-Length
 				formatPercent = d3.format(".0%");
 
-			var svg = d3.select("#map").append("svg")
+			/*var svg = d3.select("#map").append("svg")
 				.attr("width", width)
 				.attr("height", height)
 				.append("g")
 				.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 		
-			var arc = d3.svg.arc()
+			var arc = d3.arc()
 				.startAngle(0)
 				.innerRadius(180)
 				.outerRadius(240);
@@ -262,32 +262,26 @@
 
 			var text = meter.append("text")
 					.attr("text-anchor", "middle")
-					.attr("dy", ".35em");
+					.attr("dy", ".35em");*/
 			var bar = d3.select("#bar");
-			console.log(bar)
 				d3.json('../Map json files/gz_2010_us_county_500k.json')
-				.on("progress", function() {
-					var i = d3.interpolate(progress, d3.event.loaded / total);
-					
-					//console.log(i)
+				.on("progress", function(d) {
+					var i = d3.interpolate(progress, d.loaded / d.total);
 					d3.transition().tween("progress", function() {
 						return function(t) {
 							progress = i(t);
-							foreground.attr("d", arc.endAngle(twoPi * progress));
-							text.text(formatPercent(progress));
 							bar.attr("style", "width:"+formatPercent(progress));
 							bar.attr("aria-valuenow", "progress*100");
-
 						};
 					});
 				})
 				.get(function(error, data) {
-					//meter.transition().delay(250).attr("transform", "scale(0)");
+					d3.select("#progress_bar").transition().delay(250).attr("transform", "scale(0)");
 				});
-			</script>-->
+			</script>
 		</div>
 		
-		<script src="module1.js"></script>
+		<!--<script src="module1.js"></script>-->
 		<script src="plot.js"></script>
 		<script type="text/javascript">
 
