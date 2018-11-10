@@ -42,7 +42,7 @@ function Plot_bar_chart(){
                 var xPosition = d3.mouse(this)[0] + 10;
                 var yPosition = d3.mouse(this)[1] + 10;
                 tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
-                tooltip.select("text").text(d[0][1]-d[0][0]);
+                tooltip.select("text").text(function(d) { var ret_val = (objective == 'County') ? d[0][1]-d[0][0]:d.total; return ret_val; })
             })
             .transition()
             .delay(200)
@@ -119,7 +119,7 @@ function Plot_bar_chart(){
     var y_legend = d3.scaleLinear()
                 .range([h_map_legend, 0])
 
-    var tooltip = svg.append("g")
+    var tooltip = d3.select("body").append("g")
 		.attr("class", "tooltip")
 		.style("display", "none");
 						
