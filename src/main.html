@@ -233,36 +233,9 @@
 				</div>
 			 </div>
 			<script type="text/javascript">
-			//width = 960,
-				//height = 500,
-				//twoPi = 2 * Math.PI,
-			var	progress = 0,
-				total = 23543838, // must be hard-coded if server doesn't report Content-Length
+			/*var	progress = 0,
 				formatPercent = d3.format(".0%");
 
-			/*var svg = d3.select("#map").append("svg")
-				.attr("width", width)
-				.attr("height", height)
-				.append("g")
-				.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-		
-			var arc = d3.arc()
-				.startAngle(0)
-				.innerRadius(180)
-				.outerRadius(240);
-			
-			var meter = svg.append("g")
-				.attr("class", "progress-meter");
-			meter.append("path")
-					.attr("class", "background")
-					.attr("d", arc.endAngle(twoPi));
-
-			var foreground = meter.append("path")
-					.attr("class", "foreground");
-
-			var text = meter.append("text")
-					.attr("text-anchor", "middle")
-					.attr("dy", ".35em");*/
 			var bar = d3.select("#bar");
 				d3.json('../Map json files/gz_2010_us_county_500k.json')
 				.on("progress", function(d) {
@@ -277,11 +250,11 @@
 				})
 				.get(function(error, data) {
 					d3.select("#progress_bar").transition().delay(250).attr("transform", "scale(0)");
-				});
+				});*/
 			</script>
 		</div>
 		
-		<!--<script src="module1.js"></script>-->
+		<script src="module1.js"></script>
 		<script src="plot.js"></script>
 		<script type="text/javascript">
 
@@ -291,6 +264,9 @@
 		$(function(){
 			$("#Traffic_Type").change(function(){
 				Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text(),Mode);
+				///function on map to change it to appropriate type.
+				//bubble_map();
+				console.log($("#county-name").val());
 				});
 			$("#State_form").change(function(){
 				Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text(),Mode);
@@ -298,6 +274,9 @@
 			});
 			$("#Duration_form").change(function(){
 				Plot_pie_chart.draw_pie_chart($("#State_form option:selected").val(),'ALL',$("#Duration_form option:selected").val())
+			$("#county-name").oninput(function(){
+				alert('Hi');
+			})
     	});
 
 		});
@@ -305,7 +284,6 @@
 			Mode = "County";
 			Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text(),Mode);
 			$("#county-name").attr('placeholder', 'ALL');
-			//$("input.placeholder").val("ALL")
 			//$("fieldset").prop('disabled',false);//="enabled";
 		}
 		function State(){
