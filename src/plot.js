@@ -28,21 +28,21 @@ function Plot_bar_chart(){
             .attr("y", function(d) { var ret_val = (objective == 'County') ? d[0][1]-d[0][0]:d.total; return yscale(ret_val); })
             .attr("fill","#7b6888")
             .on("mouseover", function(d) { 
-                tooltip.style("display", null);
                 d3.select(this).style('fill-opacity', 0.5);
             })
             .on("mouseout", function() { 
-                tooltip.style("display", "none"); 
+                tooltip_barchart.style("display", "none");
                 d3.select(this)
                     .style('fill-opacity', function() {
                         return "";
                     });
             })
             .on("mousemove", function(d) {
-                var xPosition = d3.mouse(this)[0] + 10;
-                var yPosition = d3.mouse(this)[1] + 10;
-                tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
-                tooltip.select("text").text(function(d) { var ret_val = (objective == 'County') ? d[0][1]-d[0][0]:d.total; return ret_val; })
+                tooltip_barchart
+                    .style("left", d3.event.pageX - 50 + "px")
+                    .style("top", d3.event.pageY - 70 + "px")
+                    .style("display", "inline-block")
+                    .html(function(){var ret_val = (objective == 'County') ? d[0][1]-d[0][0]:d.total; return ret_val; });
             })
             .transition()
             .delay(200)
@@ -119,22 +119,9 @@ function Plot_bar_chart(){
     var y_legend = d3.scaleLinear()
                 .range([h_map_legend, 0])
 
-    var tooltip = d3.select("body").append("g")
-		.attr("class", "tooltip")
-		.style("display", "none");
+    var tooltip_barchart = d3.select("body").append("div").attr("class", "toolTip").attr("id","tooltip_barchart");
 						
-	tooltip.append("rect")
-		.attr("width", 60)
-		.attr("height", 30)
-		.attr("fill", "white")
-		.style("opacity", 1);
-	tooltip.append("text")
-		.attr("x", 30)
-		.attr("dy", "1.2em")
-		.style("text-anchor", "middle")
-		.attr("font-size", "15px")
-        .attr("font-weight", "bold")
-        .attr("color","black");
+	
     //thiCSV_data;
     var array = ["0 - 15 min", "15 - 30 min","30 - 60 min" , "1 - 2 hours" , "2 - 4:20 hours", "4:20 - 8:50 hours", "8:50  - 17 hours"
     , "17 - 34:10 hours","34:10 hours - 3 days","3 - 5.5 days","5.5 - 11.5 days","> 11.5 days"];
@@ -210,7 +197,24 @@ function Plot_pie_chart(){
 
         g.append("path")
             .attr("d", arc)
-            .style("fill", function(d) { return color(d.data.key); });
+            .style("fill", function(d) { return color(d.data.key); })
+            .on("mouseover", function(d) { 
+                d3.select(this).style('fill-opacity', 0.5);
+            })
+            .on("mouseout", function() { 
+                tooltip_piechart.style("display", "none");
+                d3.select(this)
+                    .style('fill-opacity', function() {
+                        return "";
+                    });
+            })
+            .on("mousemove", function(d) {
+                tooltip_piechart
+                    .style("left", d3.event.pageX - 50 + "px")
+                    .style("top", d3.event.pageY - 70 + "px")
+                    .style("display", "inline-block")
+                    .html(d.data.key + "<br>" + (d.data[0][1]-d.data[0][0]));
+            })
     }
     Plot_pie_chart.draw_pie_chart=draw_pie_chart;
 
@@ -220,6 +224,8 @@ function Plot_pie_chart(){
     var height =parseInt(svg.style("height"), 10)  - margin.top - margin.bottom;
     var radius = Math.min(width, height) / 2;
     var group = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    var tooltip_piechart = d3.select("body").append("div").attr("class", "toolTip").attr("id","tooltip_piechart");
 
     var color = d3.scaleOrdinal()
     .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00","#dd86e4"]);

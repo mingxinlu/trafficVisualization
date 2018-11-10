@@ -71,19 +71,15 @@
 				background-color: #f1f1f1;
 				height: 500px; /* only for demonstration, should be removed */
 			}
-
-			.progress-meter .background {
-				fill: #ccc;
-			}
-
-			.progress-meter .foreground {
-				fill: #000;
-			}
-
-			.progress-meter text {
-				font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-				font-size: 24px;
-				font-weight: bold;
+			.toolTip {
+				position: absolute;
+				display: none;
+				min-width: 80px;
+				height: auto;
+				background: none repeat scroll 0 0 #ffffff;
+				border: 1px solid #6F257F;
+				padding: 1px;
+				text-align: center;
 			}
 
 		</style>
@@ -254,7 +250,7 @@
 			</script>
 		</div>
 		
-		<script src="module1.js"></script>
+		<!--<script src="module1.js"></script>-->
 		<script src="plot.js"></script>
 		<script type="text/javascript">
 
