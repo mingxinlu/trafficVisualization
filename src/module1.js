@@ -23,13 +23,14 @@
 				.attr('fill','#ddd')
 				.on('click', function(d, i){
 					county_path.attr('display', 'none');
-					var temp = county_path.filter(function(local, i){
-						return local.properties.STATE == d.id; 
-								}).attr('opacity', 1)
-								.attr('display', 'inline')
-								.on('click', function(d2, i){
-									console.log(d2.properties.NAME);
-									$("#county-name").attr('placeholder', d2.properties.NAME);
+					var temp = county_path
+					.filter(function(local, i){
+						return local.properties.STATE == d.id; 								
+					}).attr('opacity', 1)
+					.attr('display', 'inline')
+					.on('click', function(d2, i){
+						console.log(d2.properties.NAME);
+						$("#county-name").attr('placeholder', d2.properties.NAME);
 					});
 				})
 				.on('mouseover', function(d, i){
@@ -180,7 +181,10 @@
 				)
 			}
 			function bubble_map(ptr){
-				d3.csv('../duration_dist_city.csv', function(error, data){
+				if(bubbles != null){
+				bubbles.remove().exit();
+				bubble_selector.remove().exit();}
+				d3.csv('../Type_dist_city.csv', function(error, data){
 					var temp = 0.0;
 					for(d in data){
 						if(data[d][ptr] > 0)
@@ -207,16 +211,16 @@
 						return "#69CC7B";
 					})
 	   				.on('mouseover', function(d, i){
-						d3.select(this).attr('opacity', '0.9')
+						d3.select(this).attr('opacity', 1)
 					})
 					.on('mouseout', function(d, i){
-						d3.select(this).attr('opacity', '0.7')
+						d3.select(this).attr('opacity', '0.9')
 					})
 					.attr("cx", function(d,i){return projection([d.mid_lng, d.mid_lat])[0];})
         			.attr("cy",function(d,i){return projection([d.mid_lng, d.mid_lat])[1];})
 					.attr("r", function(d) {
 						return radius(d[ptr]); })
-					d3.select('.bubble').append('g')
+					bubble_selector = d3.select('.bubble').append('g')
 					.selectAll('circle').data(['1-5','6-20','20-50','50-100','100-500'])
 					.enter().append('circle')
 					.attr('r','5').attr('transform', (d, i)=>{
@@ -245,6 +249,8 @@
 			var geoGenerator;
 			var projection;
 			var toolTip;
+			var bubbles;
+			var bubble_selector;
 			// running parts
 			toolTip = d3.select('body')
 					.append('div')
