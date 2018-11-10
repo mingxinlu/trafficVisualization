@@ -1,4 +1,5 @@
-// define functions
+
+			// define functions
 			function draw_state(error, states){
 				var width = 2500;
 				var height = 2500;
@@ -19,15 +20,30 @@
 				.attr('id',function(d) {
 					return d.properties.name;
 				})
-				//.attr('opacity', 0)
 				.attr('fill','#ddd')
-				.on('mouseover', function(d, i){
-					county_path.attr('opacity', 0);
+				.on('click', function(d, i){
+					county_path.attr('display', 'none');
 					var temp = county_path.filter(function(local, i){
 						return local.properties.STATE == d.id; 
-					}).attr('opacity', 1);
-					var zoom = d3.behavior.zoom();
-					temp.call(zoom);
+								}).attr('opacity', 1)
+								.attr('display', 'inline')
+								.on('click', function(d2, i){
+									console.log(d2.properties.NAME);
+									$("#county-name").attr('placeholder', d2.properties.NAME);
+					});
+				})
+				.on('mouseover', function(d, i){
+					toolTip.transition()
+			  		.style('opacity', .9)
+			  		.style('left', (d3.event.pageX) + 'px')
+			  		.style('top', (d3.event.pageY - 1) + 'px')  
+					// tempColor = this.style.fill; //store current color
+					if(d.properties.name != null || d.properties.name != undefined){
+						toolTip.html(d.properties.name + ", ")	
+					} else {
+						toolTip.html("")	
+				}
+
 				})
 				.on('mouseleave', function(d, i){
 				});
@@ -58,8 +74,10 @@
 				bubble_map('Accident');
 			}
 			function draw_county(error, counties){
-				var width = 2500;
-				var height = 2500;
+				console.log('here');
+				console.log(counties);
+				var width = 4000;
+				var height = 4000;
 				var projection_c = d3.geoEquirectangular()
 				.fitExtent([[0,-1000], [width, height-1000]], counties);
 				geoGenerator_c = d3.geoPath()
@@ -93,111 +111,16 @@
 				})
 				.attr('transform',function(d, i){
 					var center = geoGenerator_c.centroid(d);
-					center[0] = - temp[d.properties.STATE][0] /  count[d.properties.STATE]+ 600	;
+					center[0] = - temp[d.properties.STATE][0] /  count[d.properties.STATE]+ 500	;
 					center[1] = - temp[d.properties.STATE][1] /  count[d.properties.STATE] + 100;
 					return 'translate (' + center + ')';
 				}
 				 ).attr('opacity', 0)
-				data_inject('../Type_dist.csv', 'All');
+				.on('click', function(d, i){
+					console.log(d);
+				})
 
 			}
-			/*function pie_chart(){
-				d3.csv('../Type_dist.csv', function(error, data){
-					data = data[0]
-					delete data.State
-					delete data.County
-					console.log(data)
-					temp = []
-					for(key in data){
-						temp.push({'label':key, 'value': data[key]})
-					}
-					console.log(temp)
-					data = temp
-					var arc = d3.arc().outerRadius(60).innerRadius(10)
-					var colors = d3.scaleOrdinal()
-					.range(["#CC7B69", "#CCAD69", "#BACC69", "#88CC69", "#69CC7B", "#69CCAD", "#69BFCC"]
-					.reverse());
-					// var color = d3.scaleOrdinal().domain(data.map(d => d.name))
-    				// .range(d3.quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), data.length).reverse())
-					var pie = d3.pie().sort((a,b) => b.value - a.value ).value(function(d){
-						return d.value;
-					})
-					var arcs = pie(data)
-					var g = d3.select('svg').append('g')
-					.attr('transform','translate(300,500)')
-					.selectAll('path')
-					.data(arcs)
-					.enter()
-					.append('path')
-					.attr('fill',colors)
-					.attr('stroke', 'white')
-					.attr('d', arc)
-					.append('title')
-					.text(d =>`${d.data.name}: ${d.data.value.toLocaleString()}`)
-
-				})	
-			}*/
-		/*	function bar_chart(){
-				d3.csv('state-areas.csv',
-			function(rcd, i, values) {
-				rcd.overall = +rcd[values[1]];
-		  		return rcd;
-			},
-			function(error, data){
-				var height = 100;
-			  	g = svg.append("g").attr("transform", "translate(" + 100 + "," + 600 + ")").attr('id','bar');
-				var x = d3
-				.scaleBand().
-				rangeRound([0, 800]).
-				paddingInner(0.1);
-				var y = d3.scaleLinear()
-				.rangeRound([height, 0]);
-				translate = {}
-			  var temp = 0;
-			  data.map(function(d, i) {
-			  	temp = Math.max(d.overall, temp)
-			  })
-			  data.map(function(d, i) {
-			  	poses[d.State] = i;
-			  	translate[d.State] = d.overall / temp * 80;
-			  });
-			  // console.log(data)
-			  x.domain(data.map(function(d) { return d.State; }));
-			  y.domain([0, d3.max(data, function(d) { return d.overall; })]).nice();
-			  var rect =  g.append("g")
-			 .selectAll("rect")
-			 .data(data)
-			 .enter()
-			 .append("rect")
-			 .attr("fill", function(d) { return colors(Math.round(d.key / 10)); })
-			  .attr("x", function(d) { return x(d.State); })
-			  .attr("y", function(d,i) { 
-			  	return y(d.overall); })
-			  .attr("height", function(d,i) {return y(0) - y(d.overall);})
-			  .attr("width", x.bandwidth())
-			  ;
-
-			  }) 	 
-			  ;
-	  		  g.append("g")
-			  .attr("class", "axis")
-			  .attr("transform", "translate(0,"+450+")")
-			  .call(d3.axisBottom(x));
-
-			  // g.append('rect').attr('x', 0).attr('y', 0).attr('fill', '#000').attr('height', 100).attr('width', 100)
-
-			  g.append("g")
-			  .attr("class", "axis")
-			  .attr('transform','translate(0,0)')
-			  .call(d3.axisLeft(y))
-			  .append("text").
-			  text("Area")
-			  .attr("x", 60)
-			  .attr("fill", "#000");
-
-			}
-		)
-			}*/
 			function data_inject(file, ptr){
 				console.log('here');
 				var countydata = {};
@@ -241,7 +164,7 @@
 				 		}
 				 		texts.text(function(d) {
 					return check[d.properties.name];
-					})
+						})
 				 		console.log(check)
 					 	console.log(statedata);
 					 	var colors =["#78281F", "#B03A2E", "#E74C3C", "#F1948A", "#F5B7B1", "#FADBD8", "#F9EBEA"].reverse();
@@ -257,10 +180,6 @@
 				)
 			}
 			function bubble_map(ptr){
-
-				// var arc = d3.svgArc()
-				// .outerRadius(radius)
-
 				d3.csv('../duration_dist_city.csv', function(error, data){
 					var temp = 0.0;
 					for(d in data){
@@ -316,9 +235,6 @@
 					)
 			}
 
-			function controller_construct(){
-
-			}
 			
 			// define global values
 			var texts;
@@ -328,8 +244,25 @@
 			var county_value;
 			var geoGenerator;
 			var projection;
+			var toolTip;
 			// running parts
-			d3.json('../Map json files/gz_2010_us_county_500k.json', draw_county);
-    		d3.json("../Map json files/us-states.json", draw_state);
-    		// controler_construct()
-    		// data_inject()
+			toolTip = d3.select('body')
+					.append('div')
+					.attr('class','toolTip')
+					.style('position', 'absolute')
+					.style('padding', '0 10px')
+					.style('background', '#fff')
+					.style('opacity', 0)
+				  .style('font-family', 'Open Sans')
+					.style('z-index', 1000);
+
+			d3.json('../Map json files/gz_2010_us_county_500k.json', function(error1, counties){
+    			d3.json("../Map json files/us-states.json", function(error2, states){
+    				console.log(counties);
+    				draw_county(error1, counties);
+    				draw_state(error2, states);
+
+					data_inject('../Type_dist.csv', 'All');
+
+    			});
+			})
