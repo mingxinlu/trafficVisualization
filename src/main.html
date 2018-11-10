@@ -265,7 +265,8 @@
 			$("#Traffic_Type").change(function(){
 				Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text(),Mode);
 				///function on map to change it to appropriate type.
-				//bubble_map();
+				//bubble_map(????);
+				//
 				console.log($("#county-name").val());
 				});
 			$("#State_form").change(function(){
@@ -274,7 +275,7 @@
 			});
 			$("#Duration_form").change(function(){
 				Plot_pie_chart.draw_pie_chart($("#State_form option:selected").val(),'ALL',$("#Duration_form option:selected").val())
-			$("#county-name").oninput(function(){
+			$("#county-name").oninput(function(){////get the county name
 				alert('Hi');
 			})
     	});
