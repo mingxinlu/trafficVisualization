@@ -249,7 +249,7 @@ function Plot_pie_chart(){
                     .html(d.data.key + "<br>" + (d.data[0][1]-d.data[0][0]));
             })
             .transition().delay(function(d,i) {
-                return i * 500; })
+                return i * 200; })
             .duration(500)
             .attrTween('d', function(d) {
                     var i = d3.interpolate(d.startAngle, d.endAngle);
@@ -259,6 +259,15 @@ function Plot_pie_chart(){
                         }
             })
             .style("fill", function(d) { return color(d.data.key); })
+
+        g.append("text")
+            .filter(function(d){return (d.endAngle - d.startAngle) > 0.5})
+            .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+            .attr("dy", ".35em")
+            .transition()
+            .delay(1500)
+            .text(function(d) { return d.data.key; });
+
            
     }
     Plot_pie_chart.draw_pie_chart=draw_pie_chart;
