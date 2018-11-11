@@ -16,6 +16,7 @@ function get_total___(d, i, columns) {
 
 
 function update_county(ID){
+	// state_info.text(d.properties.name)
 	county_path.attr('display', 'none');
 	var temp = county_path
 	.filter(function(local, i){
@@ -36,7 +37,7 @@ function update_county(ID){
 	.on('mouseover', function(d2, i){
 		toolTip_county.style("display", "inline");
 		toolTip_county.transition()
-		.style('opacity', .9)
+		.style('opacity', 1)
 		.style('left', 1160+ 'px')
 		.style('top', 120 + 'px')
 		.style('font-size', 20)
@@ -59,7 +60,7 @@ function get_ramp(data,ptr){
 }
 	// define functions
 function draw_state(states){
-			state_info = d3.select('svg').append('text').text('').attr('transform','translate(830, 20)').attr('font-size', 25).attr('font-family',"Open Sans");
+			state_info = d3.select('svg').append('text').text('Alabama').attr('transform','translate(830, 20)').attr('font-size', 25).attr('font-family',"Open Sans");
 			var width = 3300;
 			var height = 3300;
 
