@@ -37,8 +37,9 @@ function update_county(ID){
 		toolTip_county.style("display", "inline");
 		toolTip_county.transition()
 		.style('opacity', .9)
-		.style('left', 500+ 'px')
-		.style('top', 100 + 'px')
+		.style('left', 1160+ 'px')
+		.style('top', 120 + 'px')
+		.style('font-size', 20)
 		if(d2.properties.NAME != null || d2.properties.NAME != undefined){
 			toolTip_county.html(d2.properties.NAME )	
 		} else {
@@ -58,6 +59,7 @@ function get_ramp(data,ptr){
 }
 	// define functions
 function draw_state(states){
+			state_info = d3.select('svg').append('text').text('').attr('transform','translate(830, 20)').attr('font-size', 25).attr('font-family',"Open Sans");
 			var width = 3300;
 			var height = 3300;
 
@@ -82,6 +84,7 @@ function draw_state(states){
 			})
 			.attr('fill','#ddd')
 			.on('click', function(d, i){
+				state_info.text(d.properties.name)
 				toolTip_state.style("display", "none");
 				/* set form value and plot in plot.js*/
 				$("#State_form").val(state2abrr[d.properties.name][0]);
@@ -131,6 +134,9 @@ function draw_state(states){
 }
 
 function draw_county(counties){
+					// state_info = d3.select('svg').append('text').
+					d3.select('svg').append('rect').attr('x',700).attr('y',35).attr('width',370).attr('height',370).attr('fill', '#fff')
+					// ({x: 500, y: 10, width: 200, height: 200, fill: '#fff'} )
 					var width = 9000;
 					var height = 9000;
 					var projection_c = d3.geoEquirectangular()
@@ -166,7 +172,7 @@ function draw_county(counties){
 					})
 					.attr('transform',function(d, i){
 						var center = geoGenerator_c.centroid(d);
-						center[0] = - temp[d.properties.STATE][0] /  count[d.properties.STATE]+ 800	;
+						center[0] = - temp[d.properties.STATE][0] /  count[d.properties.STATE]+ 900	;
 						center[1] = - temp[d.properties.STATE][1] /  count[d.properties.STATE] + 200;
 						return 'translate (' + center + ')';
 					}
@@ -401,6 +407,7 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 		Counties = counties;
 		start()
 	});
+	// d3.select("#temple").attr('width', 0).attr('height',0);
 	function start(){
 		draw_county( Counties);
 		draw_state( States);
