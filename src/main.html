@@ -5,7 +5,6 @@
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" 
 		integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" 
 		crossorigin="anonymous">
-		<script src="https://d3js.org/d3.v4.min.js"></script>
 		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
 		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
 		crossorigin="anonymous"></script>
@@ -15,6 +14,7 @@
 		</script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
 		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
 		crossorigin="anonymous"></script>
+		<script src="https://d3js.org/d3.v4.min.js"></script>
 		<style>
 
 			body {
@@ -43,6 +43,9 @@
 				height: 500px; /* only for demonstration, should be removed */
 				background: #ccc;
 				padding: 20px;
+			}
+			.margin{
+				padding: 5px;
 			}
 			.Map {
 				float: left;
@@ -85,29 +88,62 @@
 		</style>
 	</head>
 	<body>
-			<h1>Data Visualization Midterm Project</h1>
-			<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+			<div w3-include-html="heatmap/frequency_all.html"></div>
+			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 					<a class="navbar-brand" href="#">Data Visualization Midterm Project</a>
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+					  <span class="navbar-toggler-icon"></span>
 					</button>
-					<div class="collapse navbar-collapse" id="navbarsExampleDefault">
-						<ul class="navbar-nav mr-auto">
-						  <li class="nav-item active">
-							<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-						  </li>
-						</ul>
-						<form class="form-inline my-2 my-lg-0">
-						  <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-						  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-						</form>
+					<div class="collapse navbar-collapse" id="navbarNav">
+					  <ul class="navbar-nav">
+						<li class="nav-item active">
+						  <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+						</li>
+						<li class="nav-item">
+						  <a class="nav-link" href="#">HitMeaps</a>
+						</li>
+						<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								 View Heatmaps
+								</a>
+								<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+								  <a class="dropdown-item" href="heatmap/frequency_all.html">All</a>
+								  <a class="dropdown-item" href="heatmap/frequency_congestion.html">Congestion</a>
+								  <a class="dropdown-item" href="heatmap/frequency_construction.html">Construction</a>
+								  <a class="dropdown-item" href="heatmap/frequency_event.html">Event</a>
+								  <a class="dropdown-item" href="heatmap/frequency_incident.html">Incident</a>
+								</div>
+							  </li>
+					  </ul>
 					</div>
-			</nav>
+				  </nav>
 		<div id="buttons" class="Left_Bottom">
-			<button onclick="myFunction()" type="button" class="btn btn-secondary btn-lg btn-block">Clickme</button>
-			<button onclick="State()" type="button" class="btn btn-secondary btn-lg btn-block">State</button>
-			<button onclick="County()" type="button" class="btn btn-secondary btn-lg btn-block">County</button>
-			<fieldset enabled>
+				<div>
+				<label>Color Coding</label>
+				</div>
+				<div class="btn-group btn-group-toggle" data-toggle="buttons">
+						<label onclick="Toggle_type()" class="btn btn-outline-success active">
+						  <input   type="radio" name="options" id="option1" autocomplete="on" checked> Type
+						</label>
+						<label  onclick="Toggle_duration()" class="btn btn-outline-success">
+						  <input type="radio" name="options" id="option2" autocomplete="on"> Duration
+						</label>
+				</div>
+				<div class="margin"></div>
+				<div>
+					<label>Detail Level</label>
+				</div>
+				<div class="btn-group btn-group-toggle" data-toggle="buttons">
+						<label onclick="toggle_State()" class="btn btn-outline-primary active">
+						  <input   type="radio" name="options" id="option1" autocomplete="on" checked> State
+						</label>
+						<label  onclick="toggle_County()" class="btn btn-outline-primary">
+						  <input type="radio" name="options" id="option2" autocomplete="on"> County
+						</label>
+				</div>
+				<div class="margin"></div>
+			
+		<fieldset id="form_state" enabled>
 			<form>
 					<div class="form-group">
 					<label for="state">Select State</label>
@@ -119,7 +155,7 @@
 							<option value="CO">Colorado</option>
 							<option value="CT">Connecticut</option>
 							<option value="DE">Delaware</option>
-							<option value="DC">District Of Columbia</option>
+							<option value="DC">District of Columbia</option>
 							<option value="FL">Florida</option>
 							<option value="GA">Georgia</option>
 							<option value="ID">Idaho</option>
@@ -164,12 +200,16 @@
 					</select>
 					</div>
 			</form>
+		</fieldset>
+		<fieldset id="form_county" enabled>
 			<form>
 			<div class="form-group">				
-				<label for="County">County</label>
-				<input class="form-control" id="county-name" type="text" placeholder="Select County" readonly>
+				<label for="County">County (Select from map) </label>
+				<input class="form-control" id="county-name" type="text" placeholder="ALL" readonly>
 			</div>
 			</form>
+		</fieldset>
+		<fieldset id="form_type" enabled>	
 			<form> 
 					<div class="form-group">
 					<label for="Traffic_Type">Select Type</label>
@@ -186,6 +226,8 @@
 					</select>
 					</div>
 			</form>
+		</fieldset>
+		<fieldset id="form_dur" enabled>
 			<form>
 					<div class="form-group">
 					<label for="Duration">Select Duration</label>
@@ -210,11 +252,18 @@
 
 		</div>
 		<div class="Map">
-				<div id="progress_bar "class="progress">
-						<div id="bar" class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar"
+				<p id="load_text"> WAIT: Loading US states and counities data ...</p>
+				<!--<div id="progress_bar1"class="progress">
+						<div id="bar1" class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar"
 						aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
 						</div>
 				</div>
+
+				<div id="progress_bar2"class="progress">
+						<div id="bar2" class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar"
+						aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+						</div>
+				</div>-->
 				<div id="map">
 						<svg width="1000" height="400"></svg>
 				</div>
@@ -228,67 +277,106 @@
 						<svg width="100%" height="100%"></svg>
 				</div>
 			 </div>
-			<script type="text/javascript">
-			/*var	progress = 0,
-				formatPercent = d3.format(".0%");
-
-			var bar = d3.select("#bar");
-				d3.json('../Map json files/gz_2010_us_county_500k.json')
-				.on("progress", function(d) {
-					var i = d3.interpolate(progress, d.loaded / d.total);
-					d3.transition().tween("progress", function() {
-						return function(t) {
-							progress = i(t);
-							bar.attr("style", "width:"+formatPercent(progress));
-							bar.attr("aria-valuenow", "progress*100");
-						};
-					});
-				})
-				.get(function(error, data) {
-					d3.select("#progress_bar").transition().delay(250).attr("transform", "scale(0)");
-				});*/
-			</script>
 		</div>
 		
-		<!--<script src="module1.js"></script>-->
+		<script src="map.js"></script>
 		<script src="plot.js"></script>
 		<script type="text/javascript">
 
-		var Mode = "State";
-		Plot_bar_chart();
-		Plot_pie_chart();
-		$(function(){
-			$("#Traffic_Type").change(function(){
-				Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text(),Mode);
-				///function on map to change it to appropriate type.
-				//bubble_map(????);
-				//
-				console.log($("#county-name").val());
-				});
-			$("#State_form").change(function(){
-				Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text(),Mode);
-				Plot_pie_chart.draw_pie_chart($("#State_form option:selected").val(),'ALL')
-			});
-			$("#Duration_form").change(function(){
-				Plot_pie_chart.draw_pie_chart($("#State_form option:selected").val(),'ALL',$("#Duration_form option:selected").val())
-			$("#county-name").oninput(function(){////get the county name
-				alert('Hi');
-			})
-    	});
+			var Mode = "State";
+			var Map_mode = "Type"
+			Plot_bar_chart();
+			Plot_pie_chart();
+			$(function(){
+				
+				$("#Traffic_Type").change(function(){
+					Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text(),Mode);
+					make_bubble_map(Map_mode,ptr=$("#Traffic_Type option:selected").text());
+					///function on map to change it to appropriate type.
+					//
+					State_Color(duration=$("#Duration_form option:selected").val(),Type=$("#Traffic_Type option:selected").text(),Map_mode);
+					County_Color(state2abrr[$("#State_form option:selected").text()][1],
+					State=$("#State_form option:selected").val(),duration=$("#Duration_form option:selected").val(),
+					Type=$("#Traffic_Type option:selected").text(),Map_mode);
 
-		});
-		function County(){
-			Mode = "County";
-			Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text(),Mode);
-			$("#county-name").attr('placeholder', 'ALL');
-			//$("fieldset").prop('disabled',false);//="enabled";
-		}
-		function State(){
-			Mode = "State";
-			//$("fieldset").prop('disabled',false);
-			Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text(),Mode);
-			
-		}
+					});
+				$("#State_form").change(function(){
+					$("#county-name").attr('placeholder','ALL');
+					Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text(),Mode);
+					Plot_pie_chart.draw_pie_chart($("#State_form option:selected").val(),'ALL')
+					update_county(state2abrr[$("#State_form option:selected").text()][1]);
+					County_Color(state2abrr[$("#State_form option:selected").text()][1],
+					State=$("#State_form option:selected").val(),duration=$("#Duration_form option:selected").val(),
+					Type=$("#Traffic_Type option:selected").text(),Map_mode);
+				});
+				$("#Duration_form").change(function(){
+					Plot_pie_chart.draw_pie_chart($("#State_form option:selected").val(),'ALL',$("#Duration_form option:selected").val())
+
+					State_Color(duration=$("#Duration_form option:selected").val(),Type=$("#Traffic_Type option:selected").text(),Map_mode);
+					County_Color(state2abrr[$("#State_form option:selected").text()][1],
+					State=$("#State_form option:selected").val(),duration=$("#Duration_form option:selected").val(),
+					Type=$("#Traffic_Type option:selected").text(),Map_mode);
+			});
+
+			});
+			function toggle_County_State(){
+				Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text(),Mode);
+				$("#county-name").attr('placeholder', 'ALL');
+			}
+			function toggle_County(){
+				Mode = "County";
+				toggle_County_State();
+			}
+			function toggle_State(){
+				Mode = "State";
+				toggle_County_State();
+			}
+			function Toggle(){
+				//State_Color(duration=$("#Duration_form option:selected").val(),Type=$("#Traffic_Type option:selected").text(),Map_mode);
+				//County_Color(state2abrr[$("#State_form option:selected").text()][1],
+				//State=$("#State_form option:selected").val(),duration=$("#Duration_form option:selected").val(),
+				//Type=$("#Traffic_Type option:selected").text()),Map_mode);
+
+				make_bubble_map(Map_mode, ptr =$("#Traffic_Type option:selected").text());
+
+			}
+			function Toggle_type(){
+				Map_mode = "Type";
+				Toggle();
+
+			}
+			function Toggle_duration(){
+				Map_mode = "Duration";
+				Toggle();
+			}
+			function includeHTML() {
+				var z, i, elmnt, file, xhttp;
+				/*loop through a collection of all HTML elements:*/
+				z = document.getElementsByTagName("*");
+				for (i = 0; i < z.length; i++) {
+					elmnt = z[i];
+					/*search for elements with a certain atrribute:*/
+					file = elmnt.getAttribute("w3-include-html");
+					if (file) {
+					/*make an HTTP request using the attribute value as the file name:*/
+					xhttp = new XMLHttpRequest();
+					xhttp.onreadystatechange = function() {
+						if (this.readyState == 4) {
+						if (this.status == 200) {elmnt.innerHTML = this.responseText;}
+						if (this.status == 404) {elmnt.innerHTML = "Page not found.";}
+						/*remove the attribute, and call this function once more:*/
+						elmnt.removeAttribute("w3-include-html");
+						includeHTML();
+						}
+					}      
+					xhttp.open("GET", file, true);
+					xhttp.send();
+					/*exit the function:*/
+					return;
+					}
+				}
+			};
+			//includeHTML();
 		</script>
 		
 	</body>

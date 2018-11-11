@@ -26,7 +26,7 @@ function Plot_bar_chart(){
             //return d.County == 'ALL';})
             .attr("x", function(d,i) {  var ret_val = (objective == 'County') ? array[i]:d.County; return xscale(ret_val); })
             .attr("y", function(d) { var ret_val = (objective == 'County') ? d[0][1]-d[0][0]:d.total; return yscale(ret_val); })
-            .attr("fill","#7b6888")
+            .attr("fill","#a05d56")
             .on("mouseover", function(d) { 
                 d3.select(this).style('fill-opacity', 0.5);
             })
@@ -62,23 +62,42 @@ function Plot_bar_chart(){
         var y_axis = group.selectAll(".y_axis")
             .remove()
             .exit()
+        var text = group.selectAll("text")
+            .remove()
+            .exit();
         group.append("g")
             .attr("class", "x_axis")
             .attr("transform", "translate(0," + (height-40) + ")")
+            .text(objective)
             .call(xAxis)
             .selectAll("text")
             .attr("dx", "4em")
             .attr("dy", function(){var ret_val = (objective == 'County') ?"0.5em":"-0.5em"; return ret_val;})
             .attr("transform", function(){var ret_val = (objective == 'County') ?"rotate(45)":"rotate(90)"; return ret_val;})
         
+        group.append("text")             
+            .attr("transform",
+                  "translate(" + (width/2) + " ," + 
+                                 (height + margin.top + 20) + ")")
+            .style("text-anchor", "middle")
+            .text(function(){return (objective=="State") ? "County": "Duration";})
+
         group.append("g")
             .attr("class", "y_axis")
+            .attr("x", 20)
             .call(yAxis.ticks(10, "s"))
             .append("text")
             .attr("x", 10)
             .attr("y", -15)
-            .attr("fill", "#000")
-            .text(y_type);
+            .attr("fill", "#000");
+
+        group.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - margin.left)
+            .attr("x",0 - (height / 2))
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text(y_type);  
     }
 
     function draw_type_chart (State='AL',County='ALL',RefinedType='ALL',objective="State"){
@@ -98,13 +117,13 @@ function Plot_bar_chart(){
         
         setup_scales(new_data,objective);
         setup_bars(new_data,objective);
-        setup_axis('frequency',objective);
+        setup_axis(RefinedType+' frequency',objective);
 
     }
     Plot_bar_chart.draw_type_chart=draw_type_chart;
 
     var svg = d3.select(".Plot_bar").select("svg");
-    var margin = {top: 40, right: 20, bottom: 40, left: 60};
+    var margin = {top: 40, right: 20, bottom: 80, left: 60};
     var width =parseInt(svg.style("width"), 10) - margin.left - margin.right;
     var height =parseInt(svg.style("height"), 10)  - margin.top - margin.bottom;
     var group = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -127,7 +146,6 @@ function Plot_bar_chart(){
     , "17 - 34:10 hours","34:10 hours - 3 days","3 - 5.5 days","5.5 - 11.5 days","> 11.5 days"];
     var CSV_data;
     d3.csv("../duration_dist_All.csv",get_total,function(data){
-        //console.log(data);
         CSV_data = data;
         draw_type_chart()
     });
@@ -142,40 +160,50 @@ function Plot_bar_chart(){
 }*/
 function Plot_pie_chart(){
     function setup_legends(){
+
+        var legendRectSize = 18;
+        var legendSpacing = 4;
+        
         var keys = CSV_data.columns.slice(3);
         var legend = group.append("g")
             .attr("font-family", "sans-serif")
             .attr("font-size", 10)
             .attr("text-anchor", "end")
             .selectAll("g")
-            .exit()
-            .remove()
+            //.exit()
+            //.remove()
             .data(keys.slice())
             .enter().append("g")
-            .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+            .attr('transform', function(d, i) {
+                var height = legendRectSize + legendSpacing;
+                var offset =  height * keys.slice().length / 2;
+                var horz = -2 * legendRectSize;
+                var vert = i * height - offset;
+                return 'translate(' + horz + ',' + vert + ')';
+            });
+            //.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
         // Create rectangles for each legend g
         // Pass rect index to Z color ordinal scale
         legend.append("rect")
-            .attr("x", 4)//width - 19)
-            .attr("y", 200)//width - 19)
+            .attr('width', legendRectSize)
+            .attr('height', legendRectSize)                                   
+            .style('fill', color)
+            .style('stroke', color)
             .transition()
             .delay(200)
-            .duration(1000)
-            .attr("width", 19)
-            .attr("height", 19)
-            .attr("fill", color);
+            .duration(1000);
 
         // Create text for each legend g
         // Use the data that it inherts to create the SVG text
         legend.append("text")
+            .attr('x', legendRectSize + legendSpacing+60)
+            .attr('y', legendRectSize - legendSpacing)
             .transition()
             .delay(200)
             .duration(1000)
-            .attr("x", 0)//width - 24)
-            .attr("y", 200+9.5)
-            .attr("dy", "0.32em")
             .text(function(d) { return d; });
+       
     }
 
     function draw_pie_chart(State='AL',County='ALL',duration='ALL'){
@@ -185,7 +213,13 @@ function Plot_pie_chart(){
         })
         var keys = CSV_data.columns.slice(3);
         stacked_data = d3.stack().keys(keys)(new_data);
-
+        svg.selectAll("#pie_label").remove();
+        svg.append("text").attr("id","pie_label")             
+        .attr("transform",
+              "translate(" + (width/2) + " ," + 
+                             (height-40) + ")")
+        .style("text-anchor", "middle")
+        .text("Frequncy in ["+$("#Duration_form option:selected").text()+"] range");//{return (objective=="State") ? "County": "Duration";})
         var bararcs = group.selectAll(".arc")
             .remove()
             .exit()
@@ -219,7 +253,7 @@ function Plot_pie_chart(){
     Plot_pie_chart.draw_pie_chart=draw_pie_chart;
 
     var svg = d3.select(".Plot_pie").select("svg");
-    var margin = {top:0, right: 0, bottom: 250, left: 0};
+    var margin = {top:0, right: 0, bottom: 0, left: 0};
     var width =parseInt(svg.style("width"), 10) - margin.left - margin.right;
     var height =parseInt(svg.style("height"), 10)  - margin.top - margin.bottom;
     var radius = Math.min(width, height) / 2;
@@ -227,12 +261,12 @@ function Plot_pie_chart(){
 
     var tooltip_piechart = d3.select("body").append("div").attr("class", "toolTip").attr("id","tooltip_piechart");
 
-    var color = d3.scaleOrdinal()
-    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00","#dd86e4"]);
+    var color = d3.scaleOrdinal(d3.schemeCategory20b);
+    //.range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00","#dd86e4"]);
 
     var arc = d3.arc()
     .outerRadius(radius * 0.8)
-	.innerRadius(radius * 0.4);
+	.innerRadius(radius * 0.5);
 
     var labelArc = d3.arc()
     .innerRadius(radius * 0.9)
