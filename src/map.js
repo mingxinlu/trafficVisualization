@@ -295,7 +295,7 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 					.attr("r", function(d) {
 						return radius(d[ptr]); })
 					bubble_selector = d3.select('svg').append('g').attr("id","legend_bubbles");
-					temp = ['top 5','6-20','20-50','50-100','100-500','All'];
+					temp = ['top 5','6-20','20-50','50-100','100-500','All', 'None'];
 					bubble_selector.selectAll('text').data(temp)
 					.enter().append('text')
 					.attr('font-size','11px')
@@ -306,6 +306,7 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 							return 'translate(70,'+(223 + 17 * i )+')'
 					})
 					.attr('opacity', 0.7)
+					temp.pop()
 					temp.pop()
 					bubble_selector.selectAll('circle').data(temp)
 					.enter().append('circle')
@@ -325,8 +326,15 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 					.on('click',function(d, i){
 							bubbles.attr('display','inline')
 					})
+					bubble_selector.append('circle')
+					.attr('r', 7)
+					.attr('fill','#555')
+					.attr('transform', 'translate(50,322)')
+					.on('click',function(d, i){
+							bubbles.attr('display','none')
+					})
+					bubble_selector.append('text').text('cities').attr('transform','translate(50,200)')
 }
-	
 	// define global values
 	var path;
 	var	county_path;
