@@ -331,7 +331,7 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 					.attr('fill','#555')
 					.attr('transform', 'translate(50,322)')
 					.on('click',function(d, i){
-							bubbles.attr('display','inline')
+							bubbles.attr('display','none')
 					})
 					bubble_selector.append('text').text('cities').attr('transform','translate(50,200)')
 }
