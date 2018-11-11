@@ -417,6 +417,7 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 		County_Color();
 		update_county('01');
 		County_Color();
+		//$(".Plot").attr("style","display:inline");
 	}
 	
 	

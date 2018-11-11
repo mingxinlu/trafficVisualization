@@ -230,8 +230,7 @@ function Plot_pie_chart(){
             .attr("class", "arc");
 
         g.append("path")
-            .attr("d", arc)
-            .style("fill", function(d) { return color(d.data.key); })
+            //.attr("d", arc)
             .on("mouseover", function(d) { 
                 d3.select(this).style('fill-opacity', 0.5);
             })
@@ -249,6 +248,18 @@ function Plot_pie_chart(){
                     .style("display", "inline-block")
                     .html(d.data.key + "<br>" + (d.data[0][1]-d.data[0][0]));
             })
+            .transition().delay(function(d,i) {
+                return i * 500; })
+            .duration(500)
+            .attrTween('d', function(d) {
+                    var i = d3.interpolate(d.startAngle, d.endAngle);
+                    return function(t) {
+                        d.endAngle = i(t); 
+                        return arc(d)
+                        }
+            })
+            .style("fill", function(d) { return color(d.data.key); })
+           
     }
     Plot_pie_chart.draw_pie_chart=draw_pie_chart;
 
