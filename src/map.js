@@ -55,7 +55,7 @@ function update_county(ID){
 function get_ramp(data,ptr){
 	var minVal = 0;//d3.min(data, function(d) { return d[ptr]; });
 	var maxVal = d3.max(data, function(d) { return d[ptr]; });
-	var ramp = d3.scaleLog().domain([minVal,maxVal]).range([lowColor,highColor]);
+	var ramp = d3.scaleLinear().domain([minVal,maxVal]).range([lowColor,highColor]);
 	return ramp;
 }
 	// define functions
