@@ -135,8 +135,7 @@ function draw_state(states){
 }
 
 function draw_county(counties){
-					// state_info = d3.select('svg').append('text').
-					d3.select('svg').append('rect').attr('x',700).attr('y',35).attr('width',370).attr('height',370).attr('fill', '#fff')
+					d3.select('svg').append('rect').attr('x',700).attr('y',35).attr('width',300).attr('height',300).attr('fill', '#fff')
 					// ({x: 500, y: 10, width: 200, height: 200, fill: '#fff'} )
 					var width = 9000;
 					var height = 9000;
@@ -411,12 +410,10 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 	});
 	d3.json('../Map json files/gz_2010_us_county_500k.json')
 	.get(function(error1, counties){
-		//$("div #progress_bar2").hide();
 		$("#load_text").hide();
 		Counties = counties;
 		start()
 	});
-	// d3.select("#temple").attr('width', 0).attr('height',0);
 	function start(){
 		draw_county( Counties);
 		draw_state( States);
@@ -425,7 +422,6 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 		County_Color();
 		update_county('01');
 		County_Color();
-		//$(".Plot").attr("style","display:inline");
 	}
 	
 	
