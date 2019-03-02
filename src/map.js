@@ -35,11 +35,16 @@ function update_county(ID){
 		/*************/
 	})
 	.on('mouseover', function(d2, i){
-		toolTip_county.style("display", "inline");
+		var width1 = parseFloat(d3.select(".Left_Bottom").style("width"));
+		var width2 = parseFloat(d3.select(".Map1").style("width"));
+		var width3 = parseFloat(d3.select(".Map2").style("width"));
+		toolTip_county
+		.attr('transform','translate('+width2/4+', 20)')
+		.style("display", "inline");
 		toolTip_county.transition()
 		.style('opacity', 1)
-		.style('left', 1160+ 'px')
-		.style('top', 120 + 'px')
+		.style('left', width1+width2+width3/2+ 'px')
+		.style('top', 200 + 'px')
 		.style('font-size', 20)
 		if(d2.properties.NAME != null || d2.properties.NAME != undefined){
 			toolTip_county.html(d2.properties.NAME )	
@@ -60,17 +65,18 @@ function get_ramp(data,ptr){
 }
 	// define functions
 function draw_state(states){
-			state_info = d3.select('svg').append('text').text('Alabama').attr('transform','translate(830, 20)').attr('font-size', 25).attr('font-family',"Open Sans");
-			var width = 3300;
-			var height = 3300;
-
+			var width = parseFloat(d3.select("#SVG_map1").style("width"));
+			var height = parseFloat(d3.select("#SVG_map1").style("height"));
 			projection = d3.geoEquirectangular()
-			.fitExtent([[-400,-1500], [width-400, height-1500]], states);
+			.fitExtent([[0,0], [width, height]], states);
+			
 			geoGenerator = d3.geoPath()
 			.projection(projection);
-
+			
 			var firstpart = d3.select('svg')
+			//.attr('transform', 'translate (50,10)')
 			.append('g')
+			
 
 			var pathgroup = firstpart
 			.selectAll('g')
@@ -98,10 +104,13 @@ function draw_state(states){
 				County_Color(d.id,State=state2abrr[d.properties.name][0],duration=$("#Duration_form option:selected").val(),Type=$("#Traffic_Type option:selected").text());
 			})
 			.on('mouseover', function(d, i){
+				var width1 = parseFloat(d3.select(".Left_Bottom").style("width"));
+				var width2 = parseFloat(d3.select(".Map1").style("width"));
+
 				toolTip_state.style("display", "inline");
 				toolTip_state.transition()
 		  		.style('opacity', .9)
-		  		.style('left', 400+ 'px')
+		  		.style('left', width1+width2/2+ 'px')
 		  		.style('top', 100 + 'px')  
 				// tempColor = this.style.fill; //store current color
 				if(d.properties.name != null || d.properties.name != undefined){
@@ -135,16 +144,22 @@ function draw_state(states){
 }
 
 function draw_county(counties){
-					// state_info = d3.select('svg').append('text').
-					d3.select('svg').append('rect').attr('x',700).attr('y',35).attr('width',370).attr('height',370).attr('fill', '#fff')
-					// ({x: 500, y: 10, width: 200, height: 200, fill: '#fff'} )
-					var width = 9000;
-					var height = 9000;
+					var width = parseFloat(d3.select("#SVG_map2").style("width"));
+					var height = parseFloat(d3.select("#SVG_map2").style("height"));
+
+					d3.select('#SVG_map2').append('rect')
+					//.attr('x',700).attr('y',35)
+					.attr('width',width).attr('height',height).attr('fill', '#fff')
+
+					state_info = d3.select('#SVG_map2').append('text').text('Alabama').attr('transform','translate('+width/4+', 20)').attr('font-size', 25).attr('font-family',"Open Sans");
+					
+					
 					var projection_c = d3.geoEquirectangular()
-					.fitExtent([[0,-1000], [width, height-1000]], counties);
+					.fitExtent([[0,0], [width*30, height*30]], counties);
+
 					geoGenerator_c = d3.geoPath()
 					.projection(projection_c);
-					var firstpart = d3.select('svg')
+					var firstpart = d3.select('#SVG_map2')
 					.append('g')
 					var temp = new Array();
 					var count = new Array();
@@ -173,12 +188,11 @@ function draw_county(counties){
 					})
 					.attr('transform',function(d, i){
 						var center = geoGenerator_c.centroid(d);
-						center[0] = - temp[d.properties.STATE][0] /  count[d.properties.STATE]+ 900	;
-						center[1] = - temp[d.properties.STATE][1] /  count[d.properties.STATE] + 200;
+						center[0] = - temp[d.properties.STATE][0] /  count[d.properties.STATE]+width/2	;
+						center[1] = - temp[d.properties.STATE][1] /  count[d.properties.STATE] +height/2;
 						return 'translate (' + center + ')';
 					}
-					 )//attr('opacity', 0)
-					 //.style("display","none");
+		)
 
 }
 function State_Color(duration="ALL",Type="ALL",Map_mode='Type'){
@@ -255,7 +269,7 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 								return a[ptr] - b[ptr];
 						});
 					colors = ["Blue", "#CCAD69", "#BACC69", "#88CC69", "#69CC7B", "#69CCAD"]
-					var bubbles = d3.select('svg').append("g").attr("id","bubbles_on_map")
+					var bubbles = d3.select('#SVG_map1').append("g").attr("id","bubbles_on_map")
 					.selectAll("circle")
 					.data(data)
 					.enter().append("circle") 
@@ -294,7 +308,7 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 	        		.attr("cy",function(d,i){return projection([d.mid_lng, d.mid_lat])[1];})
 					.attr("r", function(d) {
 						return radius(d[ptr]); })
-					bubble_selector = d3.select('svg').append('g').attr("id","legend_bubbles");
+					bubble_selector = d3.select('#SVG_map1').append('g').attr("id","legend_bubbles");
 					temp = ['top 5','6-20','20-50','50-100','100-500','All', 'None'];
 					bubble_selector.selectAll('text').data(temp)
 					.enter().append('text')
@@ -303,7 +317,7 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 							return d;
 					})
 					.attr('transform', (d, i)=>{
-							return 'translate(70,'+(223 + 17 * i )+')'
+							return 'translate(40,'+(323 + 17 * i )+')'
 					})
 					.attr('opacity', 0.7)
 					temp.pop()
@@ -311,7 +325,7 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 					bubble_selector.selectAll('circle').data(temp)
 					.enter().append('circle')
 					.attr('r','5').attr('transform', (d, i)=>{
-							return 'translate(50,'+(220 + 17 * i )+')'
+							return 'translate(20,'+(320 + 17 * i )+')'
 					}).attr('fill',(d, i) => colors[i])
 					.on('click',function(d, i){
 							bubbles.attr('display','inline')
@@ -322,18 +336,18 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 					bubble_selector.append('circle')
 					.attr('r', 7)
 					.attr('fill','#fff')
-					.attr('transform', 'translate(50,305)')
+					.attr('transform', 'translate(20,405)')
 					.on('click',function(d, i){
 							bubbles.attr('display','inline')
 					})
 					bubble_selector.append('circle')
 					.attr('r', 7)
 					.attr('fill','#555')
-					.attr('transform', 'translate(50,322)')
+					.attr('transform', 'translate(20,422)')
 					.on('click',function(d, i){
 							bubbles.attr('display','none')
 					})
-					bubble_selector.append('text').text('cities').attr('transform','translate(50,200)')
+					bubble_selector.append('text').text('Top Cities').attr('transform','translate(20,450)')
 }
 	// define global values
 	var path;
@@ -347,8 +361,10 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 	var toolTip_city;
 	var lowColor = '#f9f9f9'
 	var highColor = '#bc2a66'
+	var state_info;// = d3.select('#SVG_map2').append('text').text('Alabama').attr('transform','translate(0, 0)').attr('font-size', 25).attr('font-family',"Open Sans");
+					
 	// running parts
-	toolTip_state = d3.select('body')
+	toolTip_state = d3.select('.Map1')
 			.append('div')
 			.style('position', 'absolute')
 			.style('padding', '0 10px')
@@ -356,7 +372,7 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 			.style('opacity', 0)
 		  .style('font-family', 'Open Sans')
 			.style('z-index', 800);
-	toolTip_county = d3.select('body')
+	toolTip_county = d3.select('.Map2')
 			.append('div')
 			.style('position', 'absolute')
 			.style('padding', '0 10px')
@@ -378,7 +394,7 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 	var state2abrr2={};
 	var States,Counties,type_dist_City,du_dist_City,type_dist,du_dist;
 
-	d3.csv("https://raw.githubusercontent.com/jasonong/List-of-US-States/master/states.csv",function(data){
+	d3.csv("../Map json files/states.csv",function(data){
 					d3.json("../Map json files/us-states.json",function(states){
 							States = states;
 							

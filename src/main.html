@@ -54,6 +54,18 @@
 				background-color: #f1f1f1;
 				height: 500px; /* only for demonstration, should be removed */
 			}
+			.Map1{
+				float: left;
+				width: 70%;
+				background-color: #f1f1f1;
+				height: 500px; /* only for demonstration, should be removed */
+			}
+			.Map2{
+				float: right;
+				width: 30%;
+				background-color: #f1f1f1;
+				height: 500px; /* only for demonstration, should be removed */
+			}
 			.Plot {
 				float: left;
 				padding: 20px;
@@ -251,15 +263,15 @@
 		
 		<div class="Map">
 				<div id="heatmaps" style="display:inline">
-						<object width=1000 height=400 class="heatmap" id="heatmap1" data="heatmap/frequency_all.html" style="display:none">
+						<object width=100% height=100% class="heatmap" id="heatmap1" data="heatmap/frequency_all.html" style="display:none">
 						</object>
-						<object width=1000 height=400 class="heatmap" id="heatmap2" data="heatmap/frequency_congestion.html" style="display:none">
+						<object width=100% height=400 class="heatmap" id="heatmap2" data="heatmap/frequency_congestion.html" style="display:none">
 						</object>
-						<object width=1000 height=400 class="heatmap" id="heatmap3" data="heatmap/frequency_construction.html" style="display:none">
+						<object width=100% height=400 class="heatmap" id="heatmap3" data="heatmap/frequency_construction.html" style="display:none">
 						</object>
-						<object width=1000 height=400 class="heatmap" id="heatmap4" data="heatmap/frequency_event.html" style="display:none">
+						<object width=100% height=400 class="heatmap" id="heatmap4" data="heatmap/frequency_event.html" style="display:none">
 						</object>
-						<object width=1000 height=400 class="heatmap" id="heatmap5" data="heatmap/frequency_incident.html" style="display:none">
+						<object width=100% height=400 class="heatmap" id="heatmap5" data="heatmap/frequency_incident.html" style="display:none">
 						</object>
 					</div>
 				<p id="load_text"> WAIT: Loading US states and counities data ...</p>
@@ -275,7 +287,12 @@
 						</div>
 				</div>-->
 				<div id="map" style="display:inline">
-						<svg id="SVG_map"width="1200" height="400" style="display:inline"></svg>
+					<div class="Map1">
+						<svg id="SVG_map1"width="100%" height="100%" style="display:inline" float="right"></svg>
+					</div>
+					<div class="Map2">
+						<svg id="SVG_map2"width="100%" height="100%" style="display:inline" float="left"></svg>
+					</div>
 				</div>
 			</div>
 
@@ -341,6 +358,7 @@
 
 					});
 				$("#State_form").change(function(){
+					d3.select('#SVG_map2').select('text').text($("#State_form option:selected").text())
 					$("#county-name").attr('placeholder','ALL');
 					Plot_bar_chart.draw_type_chart($("#State_form option:selected").val(),'ALL',$("#Traffic_Type option:selected").text(),Mode);
 					Plot_pie_chart.draw_pie_chart($("#State_form option:selected").val(),'ALL')
