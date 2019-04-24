@@ -1,29 +1,29 @@
-
+// helper functions
 function get_total(d, i, columns) {
     for (i = 3, t = 0; i < columns.length; ++i) t += d[columns[i]] = +d[columns[i]];
     d.total = t;
     return d;
 }
+
+
+// plot bar chart.
 function Plot_bar_chart(){
     
+    // x, y scales generation.
     function setup_scales(data,objective='County'){
         xscale.domain(data.map(function(d,i) { var ret_val = (objective == 'County') ? array[i]:d.County;  return ret_val;}));
         yscale.domain([0, d3.max(data, function(d) {var ret_val = (objective == 'County') ? d[0][1]-d[0][0] : d.total; return ret_val; })]);
     }
+
+    //bar generation.
     function setup_bars(data,objective='County'){				
         var bars = group.selectAll("rect")
             .remove()
             .exit()
-        /*var txt = group.selectAll("text")
-            .remove()
-            .exit()
-        */
         group.append("g")
             .selectAll("rect")
             .data(data)
             .enter().append("rect")
-            //.filter(function(d){
-            //return d.County == 'ALL';})
             .attr("x", function(d,i) {  var ret_val = (objective == 'County') ? array[i]:d.County; return xscale(ret_val); })
             .attr("y", function(d) { var ret_val = (objective == 'County') ? d[0][1]-d[0][0]:d.total; return yscale(ret_val); })
             .attr("fill","#a05d56")
@@ -53,6 +53,7 @@ function Plot_bar_chart(){
             .attr("width", xscale.bandwidth());
     }
     
+    // axis generation.
     function setup_axis(y_type,objective="duration"){
         var xAxis = d3.axisBottom(xscale);
         var yAxis = d3.axisLeft(yscale);
@@ -100,6 +101,8 @@ function Plot_bar_chart(){
             .text(y_type);  
     }
 
+
+// initialize types.
     function draw_type_chart (State='AL',County='ALL',RefinedType='ALL',objective="State"){
         var new_data;
         if (objective=="County"){
@@ -120,6 +123,7 @@ function Plot_bar_chart(){
         setup_axis(RefinedType+' frequency',objective);
 
     }
+    // change prototype.
     Plot_bar_chart.draw_type_chart=draw_type_chart;
 
     var svg = d3.select(".Plot_bar").select("svg");
@@ -149,15 +153,10 @@ function Plot_bar_chart(){
         CSV_data = data;
         draw_type_chart()
     });
-    //Plot_bar_chart.draw_type_chart=draw_type_chart;
 }
-/*function rename_columns(d,i,columns){
-    Object.keys(d).forEach(function(origProp,i) {
-        d[array[i]] = d[origProp];
-        delete d[origProp];
-    });
-    return d;
-}*/
+
+
+// plot pie chart.
 function Plot_pie_chart(){
     function setup_legends(){
 
@@ -205,7 +204,7 @@ function Plot_pie_chart(){
             .text(function(d) { return d; });
        
     }
-
+// initlize/change situation.
     function draw_pie_chart(State='AL',County='ALL',duration='ALL'){
         
         var new_data = CSV_data.filter(function(d){
@@ -270,6 +269,7 @@ function Plot_pie_chart(){
 
            
     }
+    // change prototype.
     Plot_pie_chart.draw_pie_chart=draw_pie_chart;
 
     var svg = d3.select(".Plot_pie").select("svg");

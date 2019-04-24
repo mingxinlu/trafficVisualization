@@ -1,3 +1,6 @@
+
+// helper functions.
+
 function get_total_(d, i, columns) {
     for (i = 4, t = 0; i < columns.length; ++i) {t += d[columns[i]] = +d[columns[i]];}
 	d.total = t;
@@ -15,6 +18,9 @@ function get_total___(d, i, columns) {
 }
 
 
+
+// update county graph when triggered.
+// country graph is pre-defined. Only need to control opacity to show needed one.
 function update_county(ID){
 	// state_info.text(d.properties.name)
 	county_path.attr('display', 'none');
@@ -57,13 +63,18 @@ function update_county(ID){
 	});
 }
 
+
+
+// get the range of data[ptr]
 function get_ramp(data,ptr){
-	var minVal = 1;//d3.min(data, function(d) { return d[ptr]; });
+	var minVal = 1;
 	var maxVal = d3.max(data, function(d) { return d[ptr]; });
 	var ramp = d3.scaleLog().domain([minVal,maxVal]).range([lowColor,highColor]);
 	return ramp;
 }
-	// define functions
+
+// update/generate state graph when triggered.
+// need to generate a new state graph in the process.
 function draw_state(states){
 			var width = parseFloat(d3.select("#SVG_map1").style("width"));
 			var height = parseFloat(d3.select("#SVG_map1").style("height"));
@@ -143,6 +154,9 @@ function draw_state(states){
 			});
 }
 
+
+
+// generate county graph when initialization.
 function draw_county(counties){
 					var width = parseFloat(d3.select("#SVG_map2").style("width"));
 					var height = parseFloat(d3.select("#SVG_map2").style("height"));
@@ -195,6 +209,9 @@ function draw_county(counties){
 		)
 
 }
+
+// fill the state graph.
+// use get_ramp in the process.
 function State_Color(duration="ALL",Type="ALL",Map_mode='Type'){
 	var data 
 		var statedata = {};
@@ -223,6 +240,10 @@ function State_Color(duration="ALL",Type="ALL",Map_mode='Type'){
 			return ret_val;
 		 });	 	
 }
+
+
+// fill the county graph.
+// use get_ramp in the process.
 function County_Color(ID="01",State='AL', duration="ALL",Type="ALL",Map_mode='Type'){
 	//var data = (Map_mode=="Type") ?type_dist : du_dist;
 	data = type_dist;
@@ -245,6 +266,9 @@ function County_Color(ID="01",State='AL', duration="ALL",Type="ALL",Map_mode='Ty
 	select_county
 	.attr("fill", function(d) { var ret_val = (countydata[d.properties.NAME]!=null) ? ramp (countydata[d.properties.NAME]): lowColor;return ret_val;})
 }
+
+
+// generate bubble map when triggered.
 function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 					var data = (Map_mode == "Type")? type_dist_City:du_dist_City;
 					ptr = (ptr=="ALL") ? "total":ptr;
@@ -394,6 +418,8 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 	var state2abrr2={};
 	var States,Counties,type_dist_City,du_dist_City,type_dist,du_dist;
 
+
+// all d3.csv: get the necessary data from files.
 	d3.csv("../Map json files/states.csv",function(data){
 					d3.json("../Map json files/us-states.json",function(states){
 							States = states;
@@ -427,12 +453,12 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 	});
 	d3.json('../Map json files/gz_2010_us_county_500k.json')
 	.get(function(error1, counties){
-		//$("div #progress_bar2").hide();
 		$("#load_text").hide();
 		Counties = counties;
 		start()
 	});
-	// d3.select("#temple").attr('width', 0).attr('height',0);
+
+	// intilization for map part.
 	function start(){
 		draw_county( Counties);
 		draw_state( States);
@@ -441,7 +467,6 @@ function make_bubble_map(Map_mode="Type", ptr = 'Accident'){
 		County_Color();
 		update_county('01');
 		County_Color();
-		//$(".Plot").attr("style","display:inline");
 	}
 	
 	
